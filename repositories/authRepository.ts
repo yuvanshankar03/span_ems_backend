@@ -1,10 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { Employer } from "../models";
 
-export async function createEmployer(
-  server: FastifyInstance,
-  employer: Omit<Employer, "id" | "created_at" | "updated_at" | "is_deleted">
-): Promise<Employer> {
+export async function createEmployer(server: FastifyInstance, employer: any) {
   const { rows } = await server.pg.query(
     `INSERT INTO employers (name, email, password_hash) 
      VALUES ($1, $2, $3) 
@@ -14,10 +10,8 @@ export async function createEmployer(
   return rows[0];
 }
 
-export async function findEmployerByEmail(
-  server: FastifyInstance,
-  email: string
-): Promise<Employer | null> {
+
+export async function findEmployerByEmail(server: FastifyInstance, email: string) {
   const { rows } = await server.pg.query(
     "SELECT * FROM employers WHERE email = $1 AND is_deleted = false",
     [email]
@@ -25,10 +19,7 @@ export async function findEmployerByEmail(
   return rows[0] || null;
 }
 
-export async function findEmployerById(
-  server: FastifyInstance,
-  id: number
-): Promise<Employer | null> {
+export async function findEmployerById(server: FastifyInstance, id: number) {
   const { rows } = await server.pg.query(
     "SELECT id, name, email, created_at FROM employers WHERE id = $1 AND is_deleted = false",
     [id]
